@@ -1,12 +1,21 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react' // 1. Ajout de useEffect
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import './App.css'
+
 // Todo app with React
 function App() {
-const [todos, setTodos] = useState([]);
+  // Fonction d'initialisation
+  const [todos, setTodos] = useState(() => {
+    const savedTodos = localStorage.getItem('react_todos');
+    return savedTodos ? JSON.parse(savedTodos) : [];
+  });
   const [inputValue, setInputValue] = useState('');
+  // Sauvegarder tâches dans le LocalStorage
+  useEffect(() => {
+    localStorage.setItem('react_todos', JSON.stringify(todos));
+  }, [todos]);
   // Ajouter une tâche
   const addTodo = (e) => {
     e.preventDefault();
@@ -29,7 +38,6 @@ const [todos, setTodos] = useState([]);
   const deleteTodo = (id) => {
     setTodos(todos.filter(todo => todo.id !== id));
   };
-
   return (
     <div style={styles.container}>
       <h2>Mon Todo List 📝</h2>      
@@ -68,8 +76,7 @@ const [todos, setTodos] = useState([]);
     </div>
   );
 }
-
-// Styles CSS en JavaScript pour plus de simplicité
+// Styles CSS
 const styles = {
   container: { maxWidth: '400px', margin: '50px auto', padding: '20px', fontFamily: 'Arial, sans-serif', textAlign: 'center', boxShadow: '0 4px 8px rgba(241, 228, 228, 0.1)', borderRadius: '8px' },
   form: { display: 'flex', gap: '10px', marginBottom: '20px' },
@@ -81,6 +88,4 @@ const styles = {
   deleteButton: { backgroundColor: '#f44336', color: 'white', border: 'none', padding: '5px 10px', borderRadius: '4px', cursor: 'pointer' },
   empty: { color: 'white', fontStyle: 'italic' }
 };
-
-
-export default App
+export default App;
